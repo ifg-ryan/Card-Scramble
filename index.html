@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Poker Scramble</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="shake-wrapper">
+    <div id="app">
+      <div id="hud">
+        <div id="hud-score">SCORE: <span id="score-value">0</span></div>
+        <div id="hud-turn">Turn: <span id="turn-count">1</span></div>
+      </div>
+
+      <div id="board-viewport">
+        <div id="left-spacer"></div>
+        <div id="board"></div>
+
+        <div id="side-panel">
+          <div id="deck-visual">
+            <div id="deck-pile">
+              <div class="deck-card-back"></div>
+              <div class="deck-card-back"></div>
+              <div class="deck-card-back"></div>
+              <div class="deck-card-back"></div>
+              <div class="deck-card-back"></div>
+              <div class="deck-card-back"></div>
+              <div class="deck-card-back"></div>
+              <div class="deck-card-back"></div>
+            </div>
+            <div id="deck-count-display">
+              <span id="deck-count">54</span>
+              <span class="deck-label">cards</span>
+            </div>
+          </div>
+
+          <div id="scoring-popup"></div>
+        </div>
+      </div>
+
+      <div id="controls">
+        <button id="undo-btn" disabled>Undo</button>
+        <button id="score-btn" disabled>Score</button>
+      </div>
+
+      <div id="hand-tray"></div>
+
+      <div id="message-overlay" class="hidden"></div>
+
+      <div id="game-over-modal" class="hidden">
+        <div class="modal-content">
+          <h1>GAME OVER</h1>
+          <div id="final-score"></div>
+          <div id="game-stats"></div>
+          <button id="play-again-btn">Play Again</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <canvas id="particle-canvas"></canvas>
+
+  <script src="game.js"></script>
+  <script src="board.js"></script>
+  <script src="effects.js"></script>
+  <script src="ui.js"></script>
+</body>
+</html>
