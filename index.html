@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Poker Scramble</title>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -12,6 +12,10 @@
       <div id="hud">
         <div id="hud-score">SCORE: <span id="score-value">0</span></div>
         <div id="hud-turn">Turn: <span id="turn-count">1</span></div>
+        <div id="mobile-deck-info">
+          <div class="deck-icon"></div>
+          <span id="mobile-deck-count">54</span> cards
+        </div>
       </div>
 
       <div id="board-viewport">
@@ -36,8 +40,8 @@
             </div>
           </div>
 
-          <div id="scoring-popup"></div>
         </div>
+        <div id="scoring-popup"></div>
       </div>
 
       <div id="controls">

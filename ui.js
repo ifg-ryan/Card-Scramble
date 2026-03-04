@@ -29,7 +29,7 @@ function renderHand() {
       e.preventDefault();
       e.stopPropagation();
       const touch = e.touches[0];
-      startDrag(card, 'hand', null, null, el, touch.clientX, touch.clientY);
+      startDrag(card, 'hand', null, null, el, touch.clientX, touch.clientY, true);
     }, { passive: false });
 
     tray.appendChild(el);
@@ -44,6 +44,11 @@ function updateHUD() {
   document.getElementById('score-value').textContent = GameState.score.toLocaleString();
   document.getElementById('deck-count').textContent = cardsRemaining();
   document.getElementById('turn-count').textContent = GameState.turnNumber + 1;
+
+  // Sync mobile deck count
+  const mobileDeckCount = document.getElementById('mobile-deck-count');
+  if (mobileDeckCount) mobileDeckCount.textContent = cardsRemaining();
+
   updateDeckVisual();
 }
 
@@ -262,16 +267,26 @@ async function drawPhase() {
 
 async function animateDrawFromDeck(count) {
   const deckPile = document.getElementById('deck-pile');
+  const mobileInfo = document.getElementById('mobile-deck-info');
   const handTray = document.getElementById('hand-tray');
 
-  if (!deckPile || !handTray) return;
+  if (!handTray) return;
 
-  const deckRect = deckPile.getBoundingClientRect();
+  // Find animation source — deck pile on desktop, mobile deck info on mobile
+  let startX, startY;
+  const deckRect = deckPile ? deckPile.getBoundingClientRect() : null;
+  if (deckRect && deckRect.width > 0) {
+    startX = deckRect.left + deckRect.width / 2;
+    startY = deckRect.top + deckRect.height / 2;
+  } else if (mobileInfo) {
+    const mRect = mobileInfo.getBoundingClientRect();
+    startX = mRect.left + mRect.width / 2;
+    startY = mRect.top + mRect.height / 2;
+  } else {
+    return; // no animation source
+  }
+
   const trayRect = handTray.getBoundingClientRect();
-
-  // Start position: center of the deck pile
-  const startX = deckRect.left + deckRect.width / 2;
-  const startY = deckRect.top + deckRect.height / 2;
 
   // End position: center of the hand tray
   const endX = trayRect.left + trayRect.width / 2;
@@ -304,9 +319,13 @@ function flyCardFromDeck(startX, startY, endX, endY, delay = 0) {
       const duration = 350;
       const startTime = performance.now();
 
-      // Control point for arc — arc to the left and down
-      const cpX = (startX + endX) / 2 - 40;
-      const cpY = Math.min(startY, endY) - 30;
+      // Control point for arc — proportional to distance for mobile/desktop
+      const dx = endX - startX;
+      const dy = endY - startY;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const arcOffset = Math.min(dist * 0.12, 40);
+      const cpX = (startX + endX) / 2 - arcOffset;
+      const cpY = Math.min(startY, endY) - arcOffset * 0.75;
 
       function animate() {
         const elapsed = performance.now() - startTime;

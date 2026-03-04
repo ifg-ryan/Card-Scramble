@@ -174,7 +174,7 @@ const dragState = {
   sourceEl: null,
 };
 
-function startDrag(card, source, sourceRow, sourceCol, sourceEl, clientX, clientY) {
+function startDrag(card, source, sourceRow, sourceCol, sourceEl, clientX, clientY, isTouch = false) {
   if (GameState.isAnimating) return;
   if (GameState.phase !== 'PLACING') return;
 
@@ -189,9 +189,15 @@ function startDrag(card, source, sourceRow, sourceCol, sourceEl, clientX, client
   dragState.offsetX = clientX - rect.left;
   dragState.offsetY = clientY - rect.top;
 
+  // On touch: shift ghost above finger so it is visible
+  if (isTouch) {
+    dragState.offsetY += 40;
+  }
+
   // Create ghost element
   const ghost = sourceEl.cloneNode(true);
   ghost.classList.add('drag-ghost');
+  if (isTouch) ghost.classList.add('touch-drag');
   ghost.style.width = rect.width + 'px';
   ghost.style.height = rect.height + 'px';
   ghost.style.left = (clientX - dragState.offsetX) + 'px';
@@ -368,6 +374,6 @@ function attachBoardCardDragListeners(cardEl, card, row, col) {
     e.preventDefault();
     e.stopPropagation();
     const touch = e.touches[0];
-    startDrag(card, 'board', row, col, cardEl, touch.clientX, touch.clientY);
+    startDrag(card, 'board', row, col, cardEl, touch.clientX, touch.clientY, true);
   }, { passive: false });
 }

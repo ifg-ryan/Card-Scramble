@@ -67,6 +67,7 @@ body {
   gap: 16px;
   overflow: hidden;
   padding: 6px 16px;
+  position: relative;
 }
 
 /* Board grid */
@@ -452,14 +453,18 @@ body {
 }
 
 /* ═══════════════════════════════════════════
-   EFFECTS: Scoring Popup (in side panel)
+   EFFECTS: Scoring Popup (positioned beside board on desktop)
    ═══════════════════════════════════════════ */
 #scoring-popup {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 140px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  flex: 1;
   min-height: 120px;
   z-index: 600;
   pointer-events: none;
@@ -627,4 +632,175 @@ body {
 @keyframes stat-fade-in {
   0% { opacity: 0; transform: translateY(8px); }
   100% { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══════════════════════════════════════════
+   Mobile Deck Info (hidden on desktop)
+   ═══════════════════════════════════════════ */
+#mobile-deck-info {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+.deck-icon {
+  width: 18px;
+  height: 26px;
+  background: linear-gradient(135deg, #c0392b, #922b21);
+  border-radius: 3px;
+  border: 1px solid rgba(255,255,255,0.2);
+  box-shadow: 1px 1px 0 rgba(0,0,0,0.3), 2px 2px 0 #7b241c;
+}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE: Disable hover on touch devices
+   ═══════════════════════════════════════════ */
+@media (hover: none) {
+  .hand-card:hover {
+    transform: none;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    z-index: auto;
+  }
+}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE: Tablets & Phones (≤768px)
+   ═══════════════════════════════════════════ */
+@media (max-width: 768px) {
+  :root {
+    --cell-size: calc((100vw - 40px) / 13);
+  }
+
+  body {
+    touch-action: none;
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+  }
+
+  #hud {
+    padding: 6px 12px;
+    font-size: 14px;
+  }
+  #hud-score { font-size: 18px; }
+  #mobile-deck-info { display: flex; }
+
+  #board-viewport {
+    flex-direction: column;
+    padding: 2px 4px;
+    gap: 0;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #left-spacer { display: none; }
+  #side-panel { display: none; }
+
+  #board {
+    padding: 4px;
+    gap: 1.5px;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+
+  /* Scoring popup — centered overlay on mobile */
+  #scoring-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    right: auto;
+    width: auto;
+    transform: translate(-50%, -50%);
+    min-height: auto;
+    background: rgba(0, 0, 0, 0.75);
+    border-radius: 12px;
+    padding: 14px 22px;
+    z-index: 650;
+  }
+
+  .scoring-hand-name.tier-1, .scoring-hand-name.tier-2 { font-size: 15px; }
+  .scoring-hand-name.tier-3 { font-size: 17px; }
+  .scoring-hand-name.tier-4 { font-size: 20px; }
+  .scoring-hand-name.tier-5 { font-size: 24px; }
+  .scoring-hand-name.tier-6 { font-size: 28px; }
+  .scoring-hand-name.tier-7 { font-size: 32px; }
+  .scoring-points { font-size: 20px; }
+  .scoring-breakdown { font-size: 11px; }
+
+  #controls {
+    padding: 4px 0;
+    gap: 10px;
+  }
+  #controls button {
+    padding: 10px 24px;
+    font-size: 16px;
+    min-height: 44px;
+  }
+
+  #hand-tray {
+    padding: 4px 4px 12px;
+    min-height: 56px;
+  }
+  .hand-card {
+    width: max(calc(var(--cell-size) * 1.1), 36px);
+    height: max(calc(var(--cell-size) * 1.6), 52px);
+    margin: 0 3px;
+  }
+  .hand-card .card-rank {
+    font-size: max(calc(var(--cell-size) * 0.36), 11px);
+  }
+  .hand-card .card-suit {
+    font-size: max(calc(var(--cell-size) * 0.28), 9px);
+  }
+
+  .draw-fly-card {
+    width: 48px;
+    height: 68px;
+  }
+  .draw-fly-card::after {
+    inset: 3px;
+  }
+
+  .modal-content {
+    max-width: calc(100vw - 40px);
+    padding: 24px 20px;
+  }
+  .modal-content h1 { font-size: 28px; }
+  #final-score { font-size: 36px; }
+  #game-stats { font-size: 14px; }
+  #play-again-btn {
+    font-size: 16px;
+    padding: 12px 32px;
+    min-height: 44px;
+  }
+
+  #message-overlay { font-size: 22px; }
+  .combo-text { font-size: 36px; }
+  .fly-points { font-size: 20px; }
+
+  /* Touch drag ghost — larger on mobile */
+  .drag-ghost.touch-drag {
+    transform: scale(1.3) rotate(2deg);
+  }
+}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE: Small phones (≤480px)
+   ═══════════════════════════════════════════ */
+@media (max-width: 480px) {
+  :root {
+    --cell-size: calc((100vw - 32px) / 13);
+  }
+
+  #board {
+    padding: 3px;
+    gap: 1px;
+  }
+
+  #hud { padding: 4px 10px; }
+  #hud-score { font-size: 16px; }
+  #mobile-deck-info { font-size: 12px; }
 }
