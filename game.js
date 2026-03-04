@@ -74,7 +74,35 @@ const GameState = {
   isAnimating: false,
   nextCardId: 0,
   totalCardsPlaced: 0,
+  sortMode: 'suit', // 'suit' = suit then value, 'rank' = value only
 };
+
+// ═══════════════════════════════════════════
+// SECTION: Hand Sorting
+// ═══════════════════════════════════════════
+
+const SUIT_ORDER = { 'spades': 0, 'hearts': 1, 'clubs': 2, 'diamonds': 3, 'wild': 4 };
+
+function sortHand() {
+  GameState.hand.sort((a, b) => {
+    // Jokers always go to the end
+    if (a.isJoker && b.isJoker) return 0;
+    if (a.isJoker) return 1;
+    if (b.isJoker) return -1;
+
+    if (GameState.sortMode === 'suit') {
+      // Primary: suit order, secondary: rank ordinal
+      const suitDiff = SUIT_ORDER[a.suit] - SUIT_ORDER[b.suit];
+      if (suitDiff !== 0) return suitDiff;
+      return RANK_ORDINALS[a.rank] - RANK_ORDINALS[b.rank];
+    } else {
+      // Primary: rank ordinal, secondary: suit order
+      const rankDiff = RANK_ORDINALS[a.rank] - RANK_ORDINALS[b.rank];
+      if (rankDiff !== 0) return rankDiff;
+      return SUIT_ORDER[a.suit] - SUIT_ORDER[b.suit];
+    }
+  });
+}
 
 // ═══════════════════════════════════════════
 // SECTION: Deck & Card Logic

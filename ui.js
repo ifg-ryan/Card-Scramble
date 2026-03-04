@@ -260,6 +260,7 @@ async function drawPhase() {
     await animateDrawFromDeck(count);
 
     GameState.hand.push(...drawn);
+    sortHand();
     renderHand();
     updateHUD();
   }
@@ -446,6 +447,15 @@ document.getElementById('undo-btn').addEventListener('click', () => {
   undoLastPlacement();
 });
 
+document.getElementById('sort-btn').addEventListener('click', () => {
+  // Toggle sort mode
+  GameState.sortMode = GameState.sortMode === 'suit' ? 'rank' : 'suit';
+  document.getElementById('sort-btn').textContent =
+    GameState.sortMode === 'suit' ? 'Sort: Suit' : 'Sort: Rank';
+  sortHand();
+  renderHand();
+});
+
 document.getElementById('play-again-btn').addEventListener('click', () => {
   document.getElementById('game-over-modal').classList.add('hidden');
   startGame();
@@ -455,9 +465,13 @@ function startGame() {
   initGame();
   initEffects();
   renderBoard();
+  sortHand();
   renderHand();
   updateHUD();
   updateControls();
+  // Reset sort button label
+  document.getElementById('sort-btn').textContent =
+    GameState.sortMode === 'suit' ? 'Sort: Suit' : 'Sort: Rank';
 }
 
 startGame();
